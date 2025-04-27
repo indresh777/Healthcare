@@ -1,0 +1,2505 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Healthcare Chatbot
+  </title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-mail.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js">
+  </script>
+  <!-- Fonts and Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+    font-family: "Inter", sans-serif;
+  }
+  </style>
+ </head>
+ <body class="bg-gray-50 min-h-screen flex flex-col">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+     <div class="flex-shrink-0 text-2xl font-bold text-blue-600 cursor-pointer" id="nav-brand">
+      Healthcare Chatbot
+     </div>
+     <div class="hidden md:flex space-x-6 items-center">
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#home" id="nav-home">
+       Home
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#chat" id="nav-chat">
+       Chat
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#backup" id="nav-backup">
+       Backup History
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#appointment" id="nav-appointment">
+       Appointments
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#video-call" id="nav-video-call">
+       Video Call
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#emergency" id="nav-emergency">
+       Emergency
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#help" id="nav-help">
+       Help
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#about" id="nav-about">
+       About
+      </a>
+      <a class="text-gray-700 hover:text-blue-600 font-semibold cursor-pointer" href="#profile" id="nav-profile">
+       Profile
+      </a>
+      <button class="text-red-600 font-semibold hover:underline focus:outline-none" id="btn-logout-nav" type="button">
+       Logout
+      </button>
+     </div>
+     <div class="md:hidden">
+      <button aria-label="Toggle menu" class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600" id="menu-btn">
+       <i class="fas fa-bars fa-lg">
+       </i>
+      </button>
+     </div>
+    </div>
+   </div>
+   <div class="hidden md:hidden bg-white shadow-md" id="mobile-menu">
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#home" id="mobile-nav-home">
+     Home
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#chat" id="mobile-nav-chat">
+     Chat
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#backup" id="mobile-nav-backup">
+     Backup History
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#appointment" id="mobile-nav-appointment">
+     Appointments
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#video-call" id="mobile-nav-video-call">
+     Video Call
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#emergency" id="mobile-nav-emergency">
+     Emergency
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#help" id="mobile-nav-help">
+     Help
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#about" id="mobile-nav-about">
+     About
+    </a>
+    <a class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-semibold cursor-pointer" href="#profile" id="mobile-nav-profile">
+     Profile
+    </a>
+    <button class="block w-full text-left px-4 py-2 text-red-600 font-semibold hover:underline focus:outline-none" id="btn-logout-mobile" type="button">
+     Logout
+    </button>
+   </div>
+  </nav>
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+   <!-- Login Page -->
+   <section aria-label="Login Section" class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 mt-12" id="login">
+    <h2 class="text-3xl font-bold text-center text-blue-600 mb-6">
+     Login to Healthcare Chatbot
+    </h2>
+    <form class="space-y-6" id="login-form" novalidate="">
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="login-username">
+       Username
+      </label>
+      <input autocomplete="username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="login-username" name="username" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="login-password">
+       Password
+      </label>
+      <input autocomplete="current-password" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="login-password" name="password" required="" type="password"/>
+     </div>
+     <div class="flex items-center justify-between">
+      <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" type="submit">
+       Login
+      </button>
+      <button class="text-blue-600 hover:underline font-semibold" id="open-signup" type="button">
+       Sign Up
+      </button>
+     </div>
+     <p class="text-red-600 text-sm mt-2 hidden" id="login-error">
+     </p>
+    </form>
+   </section>
+   <!-- Signup Modal -->
+   <div aria-labelledby="signup-title" aria-modal="true" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="signup-modal" role="dialog">
+    <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-8 relative">
+     <button aria-label="Close signup form" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 focus:outline-none" id="close-signup">
+      <i class="fas fa-times fa-lg">
+      </i>
+     </button>
+     <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center" id="signup-title">
+      Create an Account
+     </h2>
+     <form class="space-y-6" id="signup-form" novalidate="">
+      <div>
+       <label class="block text-gray-700 font-semibold mb-1" for="signup-username">
+        Username
+       </label>
+       <input autocomplete="username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="signup-username" name="username" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-gray-700 font-semibold mb-1" for="signup-password">
+        Password
+       </label>
+       <input autocomplete="new-password" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="signup-password" name="password" required="" type="password"/>
+      </div>
+      <div class="flex justify-center">
+       <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" type="submit">
+        Sign Up
+       </button>
+      </div>
+      <p class="text-red-600 text-sm mt-2 hidden" id="signup-error">
+      </p>
+      <p class="text-green-600 text-sm mt-2 hidden" id="signup-success">
+      </p>
+     </form>
+    </div>
+   </div>
+   <!-- Home Page -->
+   <section aria-label="Home Section" class="hidden mt-12" id="home">
+    <div class="text-center mb-10">
+     <h1 class="text-4xl font-extrabold text-blue-700 mb-4">
+      Welcome to Healthcare Chatbot
+     </h1>
+     <p class="text-gray-700 max-w-2xl mx-auto">
+      Your personal assistant for health advice, appointment scheduling, emergency assistance, video calls, and more.
+     </p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-chat" role="button" tabindex="0">
+      <img alt="Chat icon showing two speech bubbles representing conversation" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/00fb267c-e667-4475-41c1-4200fba3bff7.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Chat Interface
+      </h3>
+      <p class="text-gray-600 text-center">
+       Talk to the AI-powered chatbot for health advice and support.
+      </p>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-backup" role="button" tabindex="0">
+      <img alt="Backup icon showing a cloud with an arrow pointing upwards representing data backup" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/1d7c6bb6-3cdf-4342-9b51-0b69e4446ee1.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Backup History
+      </h3>
+      <p class="text-gray-600 text-center">
+       View and manage your chat backup history securely.
+      </p>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-appointment" role="button" tabindex="0">
+      <img alt="Appointment icon showing a calendar with a checkmark representing scheduling" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/d7236dc9-7103-451a-a914-0633f1ed25d0.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Appointments
+      </h3>
+      <p class="text-gray-600 text-center">
+       Schedule and manage your medical appointments easily.
+      </p>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-video-call" role="button" tabindex="0">
+      <img alt="Video call icon showing a video camera representing video conferencing" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/256bd244-24eb-4957-cff8-200322da8e48.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Video Call
+      </h3>
+      <p class="text-gray-600 text-center">
+       Connect with healthcare professionals via Zoom video calls.
+      </p>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-emergency" role="button" tabindex="0">
+      <img alt="Emergency icon showing a red cross representing emergency assistance" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/87ee7ec6-b193-42c5-de28-8ed590f9902c.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Emergency Assistance
+      </h3>
+      <p class="text-gray-600 text-center">
+       Quickly access emergency contacts and assistance.
+      </p>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" id="btn-help" role="button" tabindex="0">
+      <img alt="Help icon showing a question mark inside a circle representing assistance" class="mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/cc46a0ae-dd34-49ed-4236-cb949feeefde.jpg" width="100"/>
+      <h3 class="text-xl font-semibold mb-2">
+       Help
+      </h3>
+      <p class="text-gray-600 text-center">
+       Get assistance and tips on using the chatbot effectively.
+      </p>
+     </div>
+    </div>
+    <!-- How It Works Section -->
+    <section aria-label="How It Works Section" class="mt-16 max-w-5xl mx-auto">
+     <h2 class="text-3xl font-bold text-blue-600 mb-8 text-center">
+      How It Works
+     </h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of a user asking a health-related question to a chatbot on a smartphone" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/efe87643-b475-4ce4-b77e-c97ed1fd9c93.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        Ask Health Questions
+       </h3>
+       <p class="text-gray-600">
+        Type or speak your health concerns and get instant AI-powered advice.
+       </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of AI processing health data with digital brain and network connections" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/7a5bb558-9495-405e-ea31-a7334bc34191.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        AI-Powered Responses
+       </h3>
+       <p class="text-gray-600">
+        Our AI analyzes your input and provides personalized health recommendations.
+       </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of a calendar with medical appointments and reminders" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/cccb9b69-75e7-4a40-42b9-8b968ec5b7f1.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        Manage Appointments
+       </h3>
+       <p class="text-gray-600">
+        Schedule, view, and manage your medical appointments with ease.
+       </p>
+      </div>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10 text-center">
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of emergency assistance with phone and medical cross icon" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/431fdbb8-3a72-4d00-1786-5e61d4d1e2ed.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        Emergency Assistance
+       </h3>
+       <p class="text-gray-600">
+        Quickly access emergency contacts and resources when you need them most.
+       </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of a video call between patient and healthcare professional" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/0f1d164e-ea63-4308-b2af-8ed215615ea9.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        Video Consultations
+       </h3>
+       <p class="text-gray-600">
+        Connect with healthcare professionals via secure Zoom video calls.
+       </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+       <img alt="Illustration of cloud backup with chat history and data security" class="mb-4 w-36 h-36 object-contain" height="150" src="https://storage.googleapis.com/a1aa/image/3b8e12a3-17e4-4f18-d0b6-d67aed2f5d51.jpg" width="150"/>
+       <h3 class="text-xl font-semibold mb-2">
+        Secure Backup
+       </h3>
+       <p class="text-gray-600">
+        Keep your chat history safe and accessible anytime with secure backups.
+       </p>
+      </div>
+     </div>
+    </section>
+   </section>
+   <!-- Chat Interface -->
+   <section aria-label="Chat Interface" class="hidden mt-12 max-w-4xl mx-auto flex flex-col h-[600px]" id="chat">
+    <div class="flex justify-between items-center bg-blue-600 text-white rounded-t-lg px-6 py-3">
+     <h2 class="text-2xl font-bold">
+      Healthcare Chatbot
+     </h2>
+     <div class="flex items-center space-x-4">
+      <label class="text-sm font-semibold" for="language-select">
+       Target Language:
+      </label>
+      <select class="rounded-md px-2 py-1 text-black focus:outline-none focus:ring-2 focus:ring-blue-400" id="language-select">
+       <option>
+        English
+       </option>
+       <option>
+        Hindi
+       </option>
+       <option>
+        Telugu
+       </option>
+       <option>
+        Kannada
+       </option>
+       <option>
+        Bengali
+       </option>
+       <option>
+        Tamil
+       </option>
+       <option>
+        French
+       </option>
+       <option>
+        Russian
+       </option>
+       <option>
+        Malayalam
+       </option>
+      </select>
+     </div>
+    </div>
+    <div class="flex-grow bg-white p-4 overflow-y-auto border border-t-0 border-gray-300 rounded-b-lg" id="chat-history">
+    </div>
+    <form class="mt-4 flex space-x-2" id="chat-form">
+     <input autocomplete="off" class="flex-grow border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="chat-input" placeholder="Type your message..." required="" type="text"/>
+     <button class="bg-blue-600 text-white px-5 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" type="submit">
+      Send
+     </button>
+    </form>
+    <div class="mt-3 flex space-x-3 flex-wrap">
+     <button class="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="btn-voice-input" type="button">
+      <i class="fas fa-microphone text-blue-600">
+      </i>
+      <span>
+       Voice Input
+      </span>
+     </button>
+     <button class="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="btn-clear-chat" type="button">
+      <i class="fas fa-trash-alt text-red-600">
+      </i>
+      <span>
+       Clear Chat
+      </span>
+     </button>
+     <button class="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="btn-translate-last" type="button">
+      <i class="fas fa-language text-green-600">
+      </i>
+      <span>
+       Translate Last Bot
+      </span>
+     </button>
+    </div>
+    <p class="mt-2 text-center text-red-600 text-sm hidden" id="voice-support-msg">
+     Voice recognition is not supported in this browser. Please use a supported browser like Chrome.
+    </p>
+   </section>
+   <!-- Backup History -->
+   <section aria-label="Backup History Section" class="hidden mt-12 max-w-5xl mx-auto" id="backup">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     Backup History
+    </h2>
+    <div class="mb-4 flex justify-center">
+     <input class="w-full max-w-md border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="backup-search" placeholder="Search backups..." type="text"/>
+    </div>
+    <div class="overflow-x-auto rounded-lg border border-gray-300 shadow-sm max-h-[400px] overflow-y-auto">
+     <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-blue-600 text-white sticky top-0">
+       <tr>
+        <th class="px-6 py-3 text-left text-sm font-semibold" scope="col" style="min-width: 100px">
+         Date
+        </th>
+        <th class="px-6 py-3 text-left text-sm font-semibold" scope="col" style="min-width: 100px">
+         Time
+        </th>
+        <th class="px-6 py-3 text-left text-sm font-semibold" scope="col" style="min-width: 400px">
+         Chat
+        </th>
+       </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200" id="backup-table-body">
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-20
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         10:15 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: Hello, I have a fever.
+         <br/>
+         Bot: Fever is often caused by an infection, inflammation, or heat exposure. Stay hydrated, rest, and use fever-reducing medications like paracetamol or ibuprofen.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-21
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         02:30 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What should I do for a cold?
+         <br/>
+         Bot: A cold is caused by a viral infection and is contagious. Rest, fluids, and over-the-counter medications can help relieve symptoms.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-22
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         09:45 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: I have joint pain.
+         <br/>
+         Bot: Arthritis is caused by inflammation in the joints. Treatment includes pain management, physical therapy, and sometimes medications.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-23
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         11:00 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to treat a sprain?
+         <br/>
+         Bot: For sprains, rest, ice, compression, and elevation (RICE) are recommended. Severe sprains require medical evaluation.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-24
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         03:20 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What are the symptoms of diabetes?
+         <br/>
+         Bot: Diabetes is a chronic condition affecting blood sugar regulation. Management includes monitoring blood sugar, medication, diet, and exercise.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-25
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         08:10 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: Tell me about asthma.
+         <br/>
+         Bot: Asthma is often triggered by allergens, exercise, or stress. Inhalers and avoiding triggers are common treatments.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-26
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         01:55 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to manage high blood pressure?
+         <br/>
+         Bot: Blood pressure is measured as systolic over diastolic (e.g., 120/80 mmHg). Regular monitoring and lifestyle changes help manage blood pressure.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-27
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         04:40 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What is the treatment for depression?
+         <br/>
+         Bot: Depression may be due to genetic, biochemical, or environmental factors. Treatment includes therapy, medication, and lifestyle changes.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-28
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         10:05 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to treat a headache?
+         <br/>
+         Bot: Headaches may be caused by stress, dehydration, or underlying conditions. Rest in a quiet, dark room and take pain relievers.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-29
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         12:30 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What should I do for food poisoning?
+         <br/>
+         Bot: Food poisoning is caused by bacteria, viruses, or toxins in contaminated food. Stay hydrated and rest.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-04-30
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         09:00 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to treat a rash?
+         <br/>
+         Bot: Rashes can be caused by allergies, infections, or skin conditions. Topical creams and avoiding irritants help.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-05-01
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         11:15 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What is COVID-19?
+         <br/>
+         Bot: COVID-19 is caused by the SARS-CoV-2 virus. Treatment is supportive; vaccines and antivirals are used for prevention and management.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-05-02
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         02:45 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to handle anxiety?
+         <br/>
+         Bot: Anxiety can be triggered by stress or genetics. Therapy, relaxation techniques, and sometimes medication can help.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-05-03
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         08:50 AM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What is the treatment for insomnia?
+         <br/>
+         Bot: Insomnia can be caused by stress or poor sleep habits. Improve sleep hygiene and consider medical advice if persistent.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-05-04
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         01:10 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: How to quit smoking?
+         <br/>
+         Bot: Smoking increases risk of lung cancer, heart disease, and stroke. Quitting smoking improves health. Consider counseling and nicotine replacement therapies.
+        </td>
+       </tr>
+       <tr>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         2024-05-05
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+         03:35 PM
+        </td>
+        <td class="px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words">
+         User: What is vitamin deficiency?
+         <br/>
+         Bot: Vitamin deficiencies can be caused by poor diet or absorption issues. Treatment involves supplements and dietary adjustments.
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </section>
+   <!-- Appointment Section -->
+   <section aria-label="Appointment Section" class="hidden mt-12 max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" id="appointment">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     Manage Appointments
+    </h2>
+    <form class="space-y-4 max-w-md mx-auto" id="appointment-form">
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="appointment-date">
+       Date
+      </label>
+      <input class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="appointment-date" name="date" required="" type="date"/>
+     </div>
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="appointment-time">
+       Time
+      </label>
+      <input class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="appointment-time" name="time" required="" type="time"/>
+     </div>
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="appointment-doctor">
+       Doctor / Specialist
+      </label>
+      <input class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="appointment-doctor" name="doctor" placeholder="e.g. General Physician" required="" type="text"/>
+     </div>
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="appointment-notes">
+       Notes (optional)
+      </label>
+      <textarea class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="appointment-notes" name="notes" placeholder="Additional information or concerns" rows="3"></textarea>
+     </div>
+     <div>
+      <label class="block text-gray-700 font-semibold mb-1" for="appointment-language">
+       Preferred Language for Appointment
+      </label>
+      <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="appointment-language" name="language" required="">
+       <option selected="" value="English">
+        English
+       </option>
+       <option value="Hindi">
+        Hindi
+       </option>
+       <option value="Telugu">
+        Telugu
+       </option>
+       <option value="Kannada">
+        Kannada
+       </option>
+       <option value="Bengali">
+        Bengali
+       </option>
+       <option value="Tamil">
+        Tamil
+       </option>
+       <option value="French">
+        French
+       </option>
+       <option value="Russian">
+        Russian
+       </option>
+       <option value="Malayalam">
+        Malayalam
+       </option>
+      </select>
+     </div>
+     <div class="flex justify-center">
+      <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" type="submit">
+       Add Appointment
+      </button>
+     </div>
+     <p class="text-red-600 text-sm mt-2 hidden" id="appointment-error">
+     </p>
+     <p class="text-green-600 text-sm mt-2 hidden" id="appointment-success">
+     </p>
+    </form>
+    <div class="mt-8 max-w-md mx-auto">
+     <h3 class="text-2xl font-semibold mb-4 text-center">
+      Upcoming Appointments
+     </h3>
+     <ul class="space-y-4 text-gray-700" id="appointment-list">
+      <li class="border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative">
+       <div>
+        <strong>
+         Date:
+        </strong>
+        2024-05-10
+       </div>
+       <div>
+        <strong>
+         Time:
+        </strong>
+        10:00 AM
+       </div>
+       <div>
+        <strong>
+         Doctor:
+        </strong>
+        General Physician
+       </div>
+       <div>
+        <strong>
+         Language:
+        </strong>
+        English
+       </div>
+       <div>
+        <strong>
+         Notes:
+        </strong>
+        Annual check-up
+       </div>
+       <button aria-label="Delete appointment" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none" data-index="0">
+        <i class="fas fa-trash-alt">
+        </i>
+       </button>
+      </li>
+      <li class="border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative">
+       <div>
+        <strong>
+         Date:
+        </strong>
+        2024-05-15
+       </div>
+       <div>
+        <strong>
+         Time:
+        </strong>
+        02:30 PM
+       </div>
+       <div>
+        <strong>
+         Doctor:
+        </strong>
+        Cardiologist
+       </div>
+       <div>
+        <strong>
+         Language:
+        </strong>
+        Hindi
+       </div>
+       <div>
+        <strong>
+         Notes:
+        </strong>
+        Follow-up on blood pressure
+       </div>
+       <button aria-label="Delete appointment" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none" data-index="1">
+        <i class="fas fa-trash-alt">
+        </i>
+       </button>
+      </li>
+      <li class="border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative">
+       <div>
+        <strong>
+         Date:
+        </strong>
+        2024-05-20
+       </div>
+       <div>
+        <strong>
+         Time:
+        </strong>
+        11:00 AM
+       </div>
+       <div>
+        <strong>
+         Doctor:
+        </strong>
+        Dermatologist
+       </div>
+       <div>
+        <strong>
+         Language:
+        </strong>
+        English
+       </div>
+       <div>
+        <strong>
+         Notes:
+        </strong>
+        Skin rash consultation
+       </div>
+       <button aria-label="Delete appointment" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none" data-index="2">
+        <i class="fas fa-trash-alt">
+        </i>
+       </button>
+      </li>
+      <li class="border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative">
+       <div>
+        <strong>
+         Date:
+        </strong>
+        2024-05-25
+       </div>
+       <div>
+        <strong>
+         Time:
+        </strong>
+        09:30 AM
+       </div>
+       <div>
+        <strong>
+         Doctor:
+        </strong>
+        Neurologist
+       </div>
+       <div>
+        <strong>
+         Language:
+        </strong>
+        French
+       </div>
+       <div>
+        <strong>
+         Notes:
+        </strong>
+        Migraine evaluation
+       </div>
+       <button aria-label="Delete appointment" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none" data-index="3">
+        <i class="fas fa-trash-alt">
+        </i>
+       </button>
+      </li>
+      <li class="border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative">
+       <div>
+        <strong>
+         Date:
+        </strong>
+        2024-06-01
+       </div>
+       <div>
+        <strong>
+         Time:
+        </strong>
+        03:00 PM
+       </div>
+       <div>
+        <strong>
+         Doctor:
+        </strong>
+        Endocrinologist
+       </div>
+       <div>
+        <strong>
+         Language:
+        </strong>
+        English
+       </div>
+       <div>
+        <strong>
+         Notes:
+        </strong>
+        Diabetes management
+       </div>
+       <button aria-label="Delete appointment" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none" data-index="4">
+        <i class="fas fa-trash-alt">
+        </i>
+       </button>
+      </li>
+     </ul>
+    </div>
+   </section>
+   <!-- Video Call Section -->
+   <section aria-label="Video Call Section" class="hidden mt-12 max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" id="video-call">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     Zoom Video Call
+    </h2>
+    <p class="text-center text-gray-700 mb-6">
+     Click the button below to start or join a Zoom video call with your healthcare provider.
+    </p>
+    <div class="flex justify-center">
+     <button class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2" id="btn-zoom-call" type="button">
+      <i class="fas fa-video">
+      </i>
+      <span>
+       Start/Join Zoom Call
+      </span>
+     </button>
+    </div>
+    <div class="mt-6 text-center text-gray-600 text-sm">
+     (This will open Zoom in a new tab.)
+    </div>
+   </section>
+   <!-- Emergency Assistance Section -->
+   <section aria-label="Emergency Assistance Section" class="hidden mt-12 max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" id="emergency">
+    <h2 class="text-3xl font-bold text-red-600 mb-6 text-center">
+     Emergency Assistance
+    </h2>
+    <p class="text-center text-gray-700 mb-6">
+     Quickly access emergency contacts and resources.
+    </p>
+    <div class="max-w-md mx-auto space-y-6">
+     <div class="flex items-center space-x-4 bg-red-100 rounded-lg p-4 shadow">
+      <i class="fas fa-phone-alt fa-3x text-red-600">
+      </i>
+      <div>
+       <h3 class="text-xl font-semibold text-red-700">
+        Emergency Number
+       </h3>
+       <p class="text-gray-700 text-lg">
+        Call 911 or your local emergency number immediately.
+       </p>
+       <button class="mt-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500" id="btn-call-emergency" type="button">
+        Call Now
+       </button>
+      </div>
+     </div>
+     <div class="flex items-center space-x-4 bg-yellow-100 rounded-lg p-4 shadow">
+      <i class="fas fa-ambulance fa-3x text-yellow-600">
+      </i>
+      <div>
+       <h3 class="text-xl font-semibold text-yellow-700">
+        Ambulance Service
+       </h3>
+       <p class="text-gray-700 text-lg">
+        Contact ambulance services for urgent medical transport.
+       </p>
+       <button class="mt-2 bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500" id="btn-call-ambulance" type="button">
+        Call Ambulance
+       </button>
+      </div>
+     </div>
+     <div class="flex items-center space-x-4 bg-blue-100 rounded-lg p-4 shadow">
+      <i class="fas fa-hospital fa-3x text-blue-600">
+      </i>
+      <div>
+       <h3 class="text-xl font-semibold text-blue-700">
+        Nearest Hospital
+       </h3>
+       <p class="text-gray-700 text-lg" id="nearest-hospital-info">
+        Loading nearest hospital info...
+       </p>
+       <button class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" id="btn-open-maps" type="button">
+        Open in Maps
+       </button>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- Help Section -->
+   <section aria-label="Help Section" class="hidden mt-12 max-w-3xl mx-auto" id="help">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     Help &amp; Tips
+    </h2>
+    <ul class="list-disc list-inside space-y-3 text-gray-700 text-lg">
+     <li>
+      Use the Chat Interface to ask health-related questions and get AI-powered responses.
+     </li>
+     <li>
+      Schedule appointments and manage your health records easily.
+     </li>
+     <li>
+      Use voice input for hands-free chatting.
+     </li>
+     <li>
+      Backup your chat history regularly to avoid data loss.
+     </li>
+     <li>
+      Connect with healthcare professionals via Zoom video calls.
+     </li>
+     <li>
+      Access emergency assistance quickly when needed.
+     </li>
+     <li>
+      Contact support if you encounter any issues.
+     </li>
+    </ul>
+   </section>
+   <!-- About Section -->
+   <section aria-label="About Section" class="hidden mt-12 max-w-3xl mx-auto" id="about">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     About Healthcare Chatbot
+    </h2>
+    <p class="text-gray-700 text-lg leading-relaxed">
+     Healthcare Chatbot v1.0 is developed to assist users with health advice, appointment scheduling, emergency assistance, video calls, and managing medical information. It leverages AI and natural language processing to provide personalized responses and recommendations. This application is designed to be user-friendly, secure, and accessible on all devices.
+    </p>
+    <p class="text-gray-700 text-lg leading-relaxed mt-4">
+     Disclaimer: This chatbot provides general guidance and is not a substitute for professional medical advice. Always consult a healthcare professional for serious health concerns.
+    </p>
+   </section>
+   <!-- Profile Section -->
+   <section aria-label="Profile Section" class="hidden mt-12 max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6" id="profile">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+     User Profile
+    </h2>
+    <div class="max-w-md mx-auto">
+     <div class="flex flex-col items-center space-y-4">
+      <img alt="User profile photo placeholder showing a generic person silhouette on a light gray background" class="rounded-full w-36 h-36 object-cover shadow-md" height="150" id="profile-photo" src="https://storage.googleapis.com/a1aa/image/f0c2afe4-e775-4b36-a9a2-a393c31cbfba.jpg" width="150"/>
+      <input accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" id="profile-photo-input" type="file"/>
+     </div>
+     <form class="mt-6 space-y-4" id="profile-form">
+      <div>
+       <label class="block text-gray-700 font-semibold mb-1" for="profile-username">
+        Username
+       </label>
+       <input class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="profile-username" readonly="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-gray-700 font-semibold mb-1" for="profile-email">
+        Email
+       </label>
+       <input class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="profile-email" placeholder="Enter your email" type="email"/>
+      </div>
+      <div>
+       <label class="block text-gray-700 font-semibold mb-1" for="profile-language">
+        Preferred Language
+       </label>
+       <select class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="profile-language">
+        <option>
+         English
+        </option>
+        <option>
+         Hindi
+        </option>
+        <option>
+         Telugu
+        </option>
+        <option>
+         Kannada
+        </option>
+        <option>
+         Bengali
+        </option>
+        <option>
+         Tamil
+        </option>
+        <option>
+         French
+        </option>
+        <option>
+         Russian
+        </option>
+        <option>
+         Malayalam
+        </option>
+       </select>
+      </div>
+      <div class="flex justify-center">
+       <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" type="submit">
+        Save Profile
+       </button>
+      </div>
+      <p class="text-green-600 text-sm mt-2 hidden" id="profile-success">
+      </p>
+      <p class="text-red-600 text-sm mt-2 hidden" id="profile-error">
+      </p>
+     </form>
+    </div>
+   </section>
+  </main>
+  <!-- Footer -->
+  <footer class="bg-white shadow-inner py-4 text-center text-gray-600 text-sm select-none">
+   © 2024 Healthcare Chatbot. All rights reserved.
+  </footer>
+  <script>
+   // Mobile menu toggle
+  const menuBtn = document.getElementById("menu-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+
+  // User database simulation (in-memory)
+  const userDB = JSON.parse(localStorage.getItem("userDB")) || {};
+
+  // Current logged in user
+  let currentUser = null;
+
+  // Elements
+  const loginSection = document.getElementById("login");
+  const signupModal = document.getElementById("signup-modal");
+  const homeSection = document.getElementById("home");
+  const chatSection = document.getElementById("chat");
+  const backupSection = document.getElementById("backup");
+  const appointmentSection = document.getElementById("appointment");
+  const videoCallSection = document.getElementById("video-call");
+  const emergencySection = document.getElementById("emergency");
+  const helpSection = document.getElementById("help");
+  const aboutSection = document.getElementById("about");
+  const profileSection = document.getElementById("profile");
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+  const signupForm = document.getElementById("signup-form");
+  const signupError = document.getElementById("signup-error");
+  const signupSuccess = document.getElementById("signup-success");
+  const openSignupBtn = document.getElementById("open-signup");
+  const closeSignupBtn = document.getElementById("close-signup");
+  const btnChat = document.getElementById("btn-chat");
+  const btnBackup = document.getElementById("btn-backup");
+  const btnAppointment = document.getElementById("btn-appointment");
+  const btnVideoCall = document.getElementById("btn-video-call");
+  const btnEmergency = document.getElementById("btn-emergency");
+  const btnHelp = document.getElementById("btn-help");
+  const btnLogoutNav = document.getElementById("btn-logout-nav");
+  const btnLogoutMobile = document.getElementById("btn-logout-mobile");
+  const chatHistory = document.getElementById("chat-history");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+  const languageSelect = document.getElementById("language-select");
+  const btnVoiceInput = document.getElementById("btn-voice-input");
+  const btnClearChat = document.getElementById("btn-clear-chat");
+  const btnTranslateLast = document.getElementById("btn-translate-last");
+  const backupSearch = document.getElementById("backup-search");
+  const backupTableBody = document.getElementById("backup-table-body");
+  const appointmentForm = document.getElementById("appointment-form");
+  const appointmentList = document.getElementById("appointment-list");
+  const appointmentError = document.getElementById("appointment-error");
+  const appointmentSuccess = document.getElementById("appointment-success");
+  const btnZoomCall = document.getElementById("btn-zoom-call");
+  const btnCallEmergency = document.getElementById("btn-call-emergency");
+  const btnCallAmbulance = document.getElementById("btn-call-ambulance");
+  const btnOpenMaps = document.getElementById("btn-open-maps");
+  const nearestHospitalInfo = document.getElementById("nearest-hospital-info");
+  const voiceSupportMsg = document.getElementById("voice-support-msg");
+
+  // Profile elements
+  const profilePhoto = document.getElementById("profile-photo");
+  const profilePhotoInput = document.getElementById("profile-photo-input");
+  const profileUsername = document.getElementById("profile-username");
+  const profileEmail = document.getElementById("profile-email");
+  const profileLanguage = document.getElementById("profile-language");
+  const profileForm = document.getElementById("profile-form");
+  const profileSuccess = document.getElementById("profile-success");
+  const profileError = document.getElementById("profile-error");
+
+  // Language codes mapping
+  const languageOptions = {
+    English: "en",
+    Hindi: "hi",
+    Telugu: "te",
+    Kannada: "kn",
+    Bengali: "be",
+    Tamil: "ta",
+    French: "fr",
+    Russian: "ru",
+    Malayalam: "ml",
+  };
+
+  // Chat backup storage key prefix
+  const CHAT_BACKUP_PREFIX = "chat_backup_";
+
+  // Appointment storage key prefix
+  const APPOINTMENT_PREFIX = "appointments_";
+
+  // Profile storage key prefix
+  const PROFILE_PREFIX = "profile_";
+
+  // Show only one main section
+  function showSection(section) {
+    [
+      loginSection,
+      homeSection,
+      chatSection,
+      backupSection,
+      appointmentSection,
+      videoCallSection,
+      emergencySection,
+      helpSection,
+      aboutSection,
+      profileSection,
+    ].forEach((sec) => {
+      if (sec === section) {
+        sec.classList.remove("hidden");
+      } else {
+        sec.classList.add("hidden");
+      }
+    });
+    // Hide mobile menu on navigation
+    mobileMenu.classList.add("hidden");
+  }
+
+  // Save userDB to localStorage
+  function saveUserDB() {
+    localStorage.setItem("userDB", JSON.stringify(userDB));
+  }
+
+  // Save chat backup for current user
+  function saveChatBackup(username, message, sender) {
+    if (!username) return;
+    const key = CHAT_BACKUP_PREFIX + username;
+    let backups = JSON.parse(localStorage.getItem(key)) || [];
+    const now = new Date();
+    backups.push({
+      date: now.toLocaleDateString(),
+      time: now.toLocaleTimeString(),
+      sender: sender,
+      message: message,
+    });
+    localStorage.setItem(key, JSON.stringify(backups));
+  }
+
+  // Load chat backup for current user
+  function loadChatBackup(username) {
+    if (!username) return [];
+    const key = CHAT_BACKUP_PREFIX + username;
+    return JSON.parse(localStorage.getItem(key)) || [];
+  }
+
+  // Clear chat backup for current user
+  function clearChatBackup(username) {
+    if (!username) return;
+    const key = CHAT_BACKUP_PREFIX + username;
+    localStorage.removeItem(key);
+  }
+
+  // Render chat messages in chat history
+  function renderChatMessages(messages) {
+    chatHistory.innerHTML = "";
+    messages.forEach((msg) => {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = msg.sender === "Bot" ? "mb-4 text-left" : "mb-4 text-right";
+      const bubble = document.createElement("div");
+      bubble.className =
+        msg.sender === "Bot"
+          ? "inline-block bg-blue-100 text-blue-900 px-4 py-2 rounded-lg max-w-[80%] whitespace-pre-wrap break-words"
+          : "inline-block bg-green-100 text-green-900 px-4 py-2 rounded-lg max-w-[80%] whitespace-pre-wrap break-words";
+      bubble.textContent = `${msg.sender}: ${msg.message}`;
+      msgDiv.appendChild(bubble);
+      chatHistory.appendChild(msgDiv);
+    });
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+
+  // Render backup table rows
+  function renderBackupTable(username, filter = "") {
+    backupTableBody.innerHTML = "";
+    if (!username) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 3;
+      td.className = "px-6 py-4 text-center text-gray-500";
+      td.textContent = "Please login to view backup history.";
+      tr.appendChild(td);
+      backupTableBody.appendChild(tr);
+      return;
+    }
+    const backups = loadChatBackup(username);
+    const filtered = backups.filter((b) => b.message.toLowerCase().includes(filter.toLowerCase()));
+    if (filtered.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 3;
+      td.className = "px-6 py-4 text-center text-gray-500";
+      td.textContent = "No backup history found.";
+      tr.appendChild(td);
+      backupTableBody.appendChild(tr);
+      return;
+    }
+    filtered.forEach((b) => {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-gray-100 cursor-default";
+      const tdDate = document.createElement("td");
+      tdDate.className = "px-6 py-4 whitespace-nowrap text-sm text-gray-700";
+      tdDate.textContent = b.date;
+      const tdTime = document.createElement("td");
+      tdTime.className = "px-6 py-4 whitespace-nowrap text-sm text-gray-700";
+      tdTime.textContent = b.time;
+      const tdChat = document.createElement("td");
+      tdChat.className = "px-6 py-4 text-sm text-gray-700 whitespace-pre-wrap break-words";
+      tdChat.textContent = b.message;
+      tr.appendChild(tdDate);
+      tr.appendChild(tdTime);
+      tr.appendChild(tdChat);
+      backupTableBody.appendChild(tr);
+    });
+  }
+
+  // Show alert message
+  function showAlert(message, type = "error", container, timeout = 4000) {
+    container.textContent = message;
+    container.classList.remove("hidden");
+    container.classList.remove("text-red-600", "text-green-600");
+    container.classList.add(type === "error" ? "text-red-600" : "text-green-600");
+    setTimeout(() => {
+      container.classList.add("hidden");
+    }, timeout);
+  }
+
+  // Simulated AI response with full intents
+  function getBotResponse(message) {
+    const lower = message.toLowerCase();
+    // Greeting
+    if (
+      ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"].some((greet) =>
+        lower.includes(greet)
+      )
+    ) {
+      return "Hi! How can I help you today?";
+    }
+    // Fever
+    if (
+      [
+        "fever",
+        "temperature",
+        "high temperature",
+        "hot",
+        "chills",
+        "sweating",
+        "body ache",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return [
+        "Fever is often caused by an infection, inflammation, or heat exposure.",
+        "Stay hydrated, rest, and use fever-reducing medications like paracetamol or ibuprofen.",
+        "If your fever is above 103°F (39.4°C) or lasts more than 3 days, please see a General Physician.",
+        "Watch out for warning signs like rash, difficulty breathing, or confusion, which may indicate a more serious condition.",
+      ];
+    }
+    // Cold
+    if (
+      [
+        "cold",
+        "runny nose",
+        "sneezing",
+        "congestion",
+        "stuffy nose",
+        "sore throat",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `A cold is caused by a viral infection and is contagious. Rest, fluids, and over-the-counter medications can help relieve symptoms. If symptoms worsen or last more than 2 weeks, consult a General Physician.`;
+    }
+    // Cancer
+    if (
+      [
+        "cancer",
+        "tumor",
+        "lump",
+        "malignant",
+        "chemotherapy",
+        "radiation",
+        "oncology",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Cancer is a group of diseases characterized by uncontrolled cell growth. Treatment options include surgery, chemotherapy, and radiation therapy. Early detection is key; please consult an oncologist for personalized advice.`;
+    }
+    // Diabetes
+    if (
+      [
+        "diabetes",
+        "blood sugar",
+        "insulin",
+        "high sugar",
+        "type 1",
+        "type 2",
+        "glucose",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Diabetes is a chronic condition affecting blood sugar regulation. Management includes monitoring blood sugar, medication, diet, and exercise. Please consult an Endocrinologist for proper care.`;
+    }
+    // Arthritis
+    if (
+      [
+        "arthritis",
+        "joint pain",
+        "joint stiffness",
+        "swelling",
+        "rheumatoid",
+        "osteoarthritis",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Arthritis is caused by inflammation in the joints. Treatment includes pain management, physical therapy, and sometimes medications. Consult a Rheumatologist for diagnosis and treatment.`;
+    }
+    // Injuries (sprain, fracture)
+    if (
+      [
+        "sprain",
+        "fracture",
+        "broken bone",
+        "injury",
+        "swelling",
+        "pain",
+        "bruising",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `For sprains, rest, ice, compression, and elevation (RICE) are recommended. For fractures, immobilization and immediate medical attention are necessary. Please visit an emergency physician or orthopedist.`;
+    }
+    // Stroke
+    if (
+      [
+        "stroke",
+        "weakness on one side",
+        "face drooping",
+        "speech difficulty",
+        "confusion",
+        "numbness",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Stroke is a medical emergency. If you or someone else shows signs like sudden weakness, face drooping, or speech difficulty, call emergency services immediately.`;
+    }
+    // Other intents from your list (examples for some)
+    if (
+      [
+        "stomach pain",
+        "abdominal pain",
+        "tummy ache",
+        "belly pain",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Stomach pain can be caused by indigestion, gas, or infection. Drink warm water, avoid heavy meals, and consider antacids. If pain is severe or persistent, consult a gastroenterologist.`;
+    }
+    if (
+      [
+        "eye pain",
+        "burning eyes",
+        "eye irritation",
+        "red eyes",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Eye pain may result from strain, dryness, or infection. Use lubricating eye drops and avoid screen strain. If redness or discharge occurs, see an eye specialist.`;
+    }
+    if (
+      [
+        "ear pain",
+        "earache",
+        "ear infection",
+        "pain in my ear",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Ear pain can be due to infection or wax buildup. Warm compresses and pain relievers may help. For infections, consult an ENT specialist.`;
+    }
+    if (
+      [
+        "tooth pain",
+        "toothache",
+        "pain in my tooth",
+        "hurts teeth",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Tooth pain might indicate decay or infection. Warm salt water rinses and painkillers can provide temporary relief. Visit a dentist for proper treatment.`;
+    }
+    if (
+      [
+        "tongue pain",
+        "tongue sore",
+        "pain in my tongue",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Tongue pain can be caused by ulcers or infections. Use antiseptic mouthwashes and avoid spicy food. If persistent, consult a dentist or doctor.`;
+    }
+    if (
+      [
+        "back pain",
+        "lower back pain",
+        "upper back pain",
+        "pain in back",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Back pain is often due to posture or strain. Rest, hot compresses, and pain relievers help. For chronic pain, physiotherapy is recommended.`;
+    }
+    if (
+      [
+        "leg pain",
+        "aching leg",
+        "sore leg",
+        "pain in my leg",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Leg pain can stem from muscle fatigue or circulation issues. Elevate your legs, use pain relief gels, and stay hydrated. Consult a doctor if pain persists.`;
+    }
+    if (
+      [
+        "weakness",
+        "feeling weak",
+        "tired",
+        "low energy",
+        "body weakness",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Weakness may result from low iron, dehydration, or illness. Eat balanced meals, hydrate, and consider supplements. Consult a doctor if prolonged.`;
+    }
+    if (
+      [
+        "hand pain",
+        "wrist pain",
+        "pain in hand",
+        "sore hands",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Hand pain may be due to overuse or strain. Apply cold or warm compress, and use pain relief gels. If swelling persists, seek medical advice.`;
+    }
+    if (
+      [
+        "headache",
+        "migraine",
+        "head pain",
+        "throbbing head",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Headaches may be caused by stress, dehydration, or underlying conditions. Rest in a quiet, dark room and take pain relievers. If severe or persistent, consult a neurologist.`;
+    }
+    if (
+      [
+        "cough",
+        "dry cough",
+        "productive cough",
+        "chest tightness",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Coughs can be caused by cold, flu, allergies, or asthma. Stay hydrated and use cough drops. If severe or accompanied by chest pain, see a pulmonologist.`;
+    }
+    if (
+      [
+        "allergy",
+        "allergic",
+        "sneezing",
+        "itchy eyes",
+        "runny nose",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Allergies occur when your immune system overreacts to substances. Antihistamines and avoiding allergens help. For severe allergies, consult an allergist.`;
+    }
+    if (
+      [
+        "fatigue",
+        "tiredness",
+        "lack of energy",
+        "exhaustion",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Fatigue can result from stress, poor sleep, or illness. Improve sleep hygiene, manage stress, and eat well. Consult a general physician if prolonged.`;
+    }
+    if (
+      [
+        "defibrillation",
+        "electric shock heart",
+        "heart shock",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Defibrillation delivers an electric shock to restore normal heart rhythm during cardiac emergencies. It is critical in ventricular fibrillation or pulseless ventricular tachycardia. Consult a cardiologist if needed.`;
+    }
+    if (
+      [
+        "first aid burns",
+        "burn treatment",
+        "how to treat burns",
+        "burns first aid",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Immediate cooling with cool water helps reduce burn severity and pain. For severe burns, seek urgent medical care.`;
+    }
+    if (
+      [
+        "blood pressure",
+        "high blood pressure",
+        "hypertension",
+        "low blood pressure",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Blood pressure is measured as systolic over diastolic (e.g., 120/80 mmHg). Regular monitoring and lifestyle changes help manage blood pressure. Consult a general physician for personalized advice.`;
+    }
+    if (
+      [
+        "oxygen therapy",
+        "oxygen support",
+        "oxygen treatment",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Oxygen therapy provides supplemental oxygen for patients in respiratory distress. It is commonly used in chronic conditions like COPD or during acute respiratory episodes. Consult a pulmonologist for guidance.`;
+    }
+    if (
+      [
+        "iv fluid therapy",
+        "intravenous fluids",
+        "iv drip",
+        "fluid therapy",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `IV fluid therapy administers fluids directly into the bloodstream to restore hydration and balance electrolytes. It is crucial in emergencies such as dehydration and shock. Consult an emergency physician for treatment.`;
+    }
+    if (
+      [
+        "asthma",
+        "wheezing",
+        "shortness of breath",
+        "chest tightness",
+        "coughing",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Asthma is often triggered by allergens, exercise, or stress. Inhalers and avoiding triggers are common treatments. Consult a pulmonologist for management.`;
+    }
+    if (
+      [
+        "migraine",
+        "severe headache",
+        "nausea",
+        "sensitivity to light",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Migraines can be triggered by stress, certain foods, or hormonal changes. Treatment may include medications, rest, and avoiding triggers. Consult a neurologist if frequent.`;
+    }
+    if (
+      [
+        "nausea",
+        "feeling sick",
+        "upset stomach",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Nausea can be caused by motion sickness, food poisoning, or medications. Ginger, hydration, and rest can help. Consult a doctor if persistent.`;
+    }
+    if (
+      [
+        "vomiting",
+        "throwing up",
+        "emesis",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Vomiting may result from infections or food poisoning. Stay hydrated and rest. Seek medical attention if vomiting persists.`;
+    }
+    if (
+      [
+        "diarrhea",
+        "loose stools",
+        "frequent bowel movements",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Diarrhea can be caused by infections or chronic conditions. Stay hydrated and consider over-the-counter remedies. Consult a doctor if severe or prolonged.`;
+    }
+    if (
+      [
+        "constipation",
+        "difficulty passing stools",
+        "infrequent bowel movements",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Constipation is often due to lack of fiber, dehydration, or inactivity. Increase water and fiber intake. Consult a doctor if persistent.`;
+    }
+    if (
+      [
+        "anxiety",
+        "nervousness",
+        "worry",
+        "panic attacks",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Anxiety can be triggered by stress or genetics. Therapy, relaxation techniques, and sometimes medication can help. Consult a mental health professional if needed.`;
+    }
+    if (
+      [
+        "depression",
+        "sadness",
+        "loss of interest",
+        "low mood",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Depression may be due to genetic, biochemical, or environmental factors. Treatment includes therapy, medication, and lifestyle changes. Consult a mental health professional.`;
+    }
+    if (
+      [
+        "insomnia",
+        "difficulty sleeping",
+        "poor sleep",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Insomnia can be caused by stress or poor sleep habits. Improve sleep hygiene and consider medical advice if persistent.`;
+    }
+    if (
+      [
+        "conjunctivitis",
+        "pink eye",
+        "eye infection",
+        "red eyes",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Conjunctivitis can be caused by infections or allergies. Treatment depends on cause and may include eye drops and hygiene. Consult an eye specialist.`;
+    }
+    if (
+      [
+        "rash",
+        "skin rash",
+        "red spots",
+        "itchy skin",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Rashes can be caused by allergies, infections, or skin conditions. Topical creams and avoiding irritants help. Consult a dermatologist if persistent.`;
+    }
+    if (
+      [
+        "eczema",
+        "atopic dermatitis",
+        "dry skin",
+        "itchy skin",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Eczema is a chronic skin condition triggered by allergens or irritants. Moisturizers and topical steroids help manage symptoms. Consult a dermatologist.`;
+    }
+    if (
+      [
+        "sprain",
+        "ligament injury",
+        "twisted ankle",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `A sprain is an injury to ligaments caused by overstretching. Rest, ice, compression, and elevation (RICE) are recommended. Severe sprains require medical evaluation.`;
+    }
+    if (
+      [
+        "fracture",
+        "broken bone",
+        "bone injury",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `A fracture is a break in a bone caused by trauma. Immobilize the area and seek immediate medical attention.`;
+    }
+    if (
+      [
+        "food poisoning",
+        "stomach infection",
+        "vomiting",
+        "diarrhea",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Food poisoning is caused by bacteria, viruses, or toxins in contaminated food. Stay hydrated and rest. Seek medical attention if symptoms are severe.`;
+    }
+    if (
+      [
+        "uti",
+        "urinary tract infection",
+        "painful urination",
+        "frequent urination",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `UTIs are caused by bacteria entering the urinary tract. Antibiotics are the usual treatment. Consult a doctor if you have symptoms like burning urination or frequent urges.`;
+    }
+    if (
+      [
+        "kidney stones",
+        "renal calculi",
+        "pain in back",
+        "blood in urine",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Kidney stones are hard deposits formed in the kidneys. Treatment includes pain management and sometimes procedures to remove stones. Consult a urologist.`;
+    }
+    if (
+      [
+        "chest pain",
+        "heart pain",
+        "angina",
+        "tightness in chest",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Chest pain can be due to heart, lung, or muscle issues. If severe or accompanied by shortness of breath, seek emergency medical help immediately.`;
+    }
+    if (
+      [
+        "heart attack",
+        "myocardial infarction",
+        "chest pressure",
+        "shortness of breath",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Heart attacks are caused by blocked coronary arteries. Symptoms include chest pain, shortness of breath, and discomfort in upper body. Call emergency services immediately.`;
+    }
+    if (
+      [
+        "heart failure",
+        "weak heart",
+        "shortness of breath",
+        "swelling legs",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Heart failure occurs when the heart cannot pump blood effectively. Symptoms include fatigue and swelling. Treatment includes lifestyle changes and medications. Consult a cardiologist.`;
+    }
+    if (
+      [
+        "arrhythmia",
+        "irregular heartbeat",
+        "palpitations",
+        "heart rhythm",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Arrhythmia is an irregular heartbeat caused by various factors. Treatment may include medications or procedures. Consult a cardiologist for diagnosis.`;
+    }
+    if (
+      [
+        "hyperlipidemia",
+        "high cholesterol",
+        "high fats",
+        "lipid disorder",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Hyperlipidemia is high cholesterol or fats in the blood. Diet, exercise, and medications help manage it. Regular check-ups are important.`;
+    }
+    if (
+      [
+        "obesity",
+        "overweight",
+        "excess weight",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Obesity is caused by excessive calorie intake and lack of activity. Management includes diet, exercise, and sometimes medication or surgery. Consult a healthcare provider.`;
+    }
+    if (
+      [
+        "smoking",
+        "tobacco",
+        "cigarettes",
+        "smoke",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Smoking increases risk of lung cancer, heart disease, and stroke. Quitting smoking improves health. Consider counseling and nicotine replacement therapies.`;
+    }
+    if (
+      [
+        "alcohol abuse",
+        "drinking problem",
+        "alcoholism",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Alcohol abuse can lead to liver disease, heart problems, and mental health issues. Treatment includes counseling, support groups, and medication. Seek professional help if needed.`;
+    }
+    if (
+      [
+        "thyroid",
+        "hypothyroidism",
+        "hyperthyroidism",
+        "thyroid disorder",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Thyroid disorders involve underactive or overactive thyroid function. Treatment depends on type and may include hormone replacement or medications. Consult an endocrinologist.`;
+    }
+    if (
+      [
+        "anemia",
+        "low iron",
+        "fatigue",
+        "pale skin",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Anemia is usually caused by iron deficiency or chronic disease. Treatment includes iron supplements and dietary changes. Consult a healthcare provider.`;
+    }
+    if (
+      [
+        "vitamin deficiency",
+        "lack of vitamins",
+        "nutrient deficiency",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Vitamin deficiencies can be caused by poor diet or absorption issues. Treatment involves supplements and dietary adjustments. Consult a healthcare provider.`;
+    }
+    if (
+      [
+        "inflammation",
+        "swelling",
+        "redness",
+        "pain",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Inflammation is the body's response to injury or infection. Anti-inflammatory medications and rest can help reduce symptoms. Consult a doctor if severe.`;
+    }
+    if (
+      [
+        "covid",
+        "coronavirus",
+        "covid-19",
+        "pandemic",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `COVID-19 is caused by the SARS-CoV-2 virus. Treatment is supportive; vaccines and antivirals are used for prevention and management. Symptoms include fever, cough, and difficulty breathing.`;
+    }
+    if (
+      [
+        "pneumonia",
+        "lung infection",
+        "chest infection",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `Pneumonia is an infection of the lungs caused by bacteria or viruses. Treatment may involve antibiotics, rest, and fluids. Consult a healthcare provider.`;
+    }
+    if (
+      [
+        "flu",
+        "influenza",
+        "body aches",
+        "fever",
+        "fatigue",
+      ].some((kw) => lower.includes(kw))
+    ) {
+      return `The flu is a viral infection affecting the respiratory system. Rest, fluids, and antiviral medications can help. Consult a healthcare provider if symptoms worsen.`;
+    }
+    // Default fallback
+    return "I'm not sure how to respond to that. Please try asking differently or be more specific.";
+  }
+
+  // Translate text using Google Translate API (mocked here)
+  async function translateText(text, targetLang) {
+    if (targetLang === "en") return text;
+    return `${text} [translated to ${targetLang}]`;
+  }
+
+  // Voice recognition using Web Speech API with fallback support
+  let recognition = null;
+  let isVoiceSupported = false;
+
+  function initVoiceRecognition() {
+    if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      isVoiceSupported = true;
+      voiceSupportMsg.classList.add("hidden");
+    } else {
+      isVoiceSupported = false;
+      voiceSupportMsg.classList.remove("hidden");
+    }
+  }
+
+  function startVoiceRecognition() {
+    if (!isVoiceSupported) {
+      alert("Voice recognition is not supported in this browser. Please use a supported browser like Chrome.");
+      return;
+    }
+    recognition.start();
+  }
+
+  // Add user message to chat and save backup
+  function addUserMessage(message) {
+    if (!currentUser) return;
+    const messages = loadChatBackup(currentUser);
+    messages.push({
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString(),
+      sender: "You",
+      message,
+    });
+    localStorage.setItem(CHAT_BACKUP_PREFIX + currentUser, JSON.stringify(messages));
+    renderChatMessages(messages);
+  }
+
+  // Add bot message to chat and save backup
+  function addBotMessage(message) {
+    if (!currentUser) return;
+    const messages = loadChatBackup(currentUser);
+    messages.push({
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString(),
+      sender: "Bot",
+      message,
+    });
+    localStorage.setItem(CHAT_BACKUP_PREFIX + currentUser, JSON.stringify(messages));
+    renderChatMessages(messages);
+  }
+
+  // Process user message: get response, translate if needed, speak voice
+  async function processUserMessage(message) {
+    if (!currentUser) return;
+    const targetLangName = languageSelect.value;
+    const targetLangCode = languageOptions[targetLangName] || "en";
+    let botResponse = getBotResponse(message);
+    if (Array.isArray(botResponse)) {
+      botResponse = botResponse.join("\n");
+    }
+    if (targetLangCode !== "en") {
+      const translatedResponse = await translateText(botResponse, targetLangCode);
+      addBotMessage(`${botResponse} (Translated: ${translatedResponse})`);
+      speakText(translatedResponse);
+    } else {
+      addBotMessage(botResponse);
+      speakText(botResponse);
+    }
+    if (["bye", "exit", "goodbye"].some((word) => message.toLowerCase().includes(word))) {
+      setTimeout(() => {
+        alert("Session ended. Returning to Home.");
+        showSection(homeSection);
+      }, 1500);
+    }
+  }
+
+  // Speak text using Web Speech API
+  function speakText(text) {
+    if (!("speechSynthesis" in window)) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Translate last bot message async
+  async function translateLastBotMessage() {
+    if (!currentUser) return;
+    const messages = loadChatBackup(currentUser);
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].sender === "Bot") {
+        const targetLangName = languageSelect.value;
+        const targetLangCode = languageOptions[targetLangName] || "en";
+        if (targetLangCode === "en") {
+          alert("Target language is English. No translation needed.");
+          return;
+        }
+        const translated = await translateText(messages[i].message, targetLangCode);
+        alert(`Translated to ${targetLangName}:\n${translated}`);
+        return;
+      }
+    }
+    alert("No bot message found to translate.");
+  }
+
+  // Clear chat history
+  function clearChat() {
+    if (!currentUser) return;
+    if (confirm("Are you sure you want to clear the chat history?")) {
+      clearChatBackup(currentUser);
+      renderChatMessages([]);
+    }
+  }
+
+  // Appointment storage functions
+  function saveAppointments(username, appointments) {
+    localStorage.setItem(APPOINTMENT_PREFIX + username, JSON.stringify(appointments));
+  }
+  function loadAppointments(username) {
+    if (!username) return [];
+    return JSON.parse(localStorage.getItem(APPOINTMENT_PREFIX + username)) || [];
+  }
+  function renderAppointments(username) {
+    appointmentList.innerHTML = "";
+    if (!username) {
+      appointmentList.innerHTML = '<li class="text-center text-gray-500">Please login to view appointments.</li>';
+      return;
+    }
+    const appointments = loadAppointments(username);
+    if (appointments.length === 0) {
+      appointmentList.innerHTML = '<li class="text-center text-gray-500">No upcoming appointments.</li>';
+      return;
+    }
+    appointments.forEach((appt, index) => {
+      const li = document.createElement("li");
+      li.className = "border border-gray-300 rounded-md p-4 shadow hover:shadow-lg transition-shadow relative";
+      li.innerHTML = `
+        <div><strong>Date:</strong> ${appt.date}</div>
+        <div><strong>Time:</strong> ${appt.time}</div>
+        <div><strong>Doctor:</strong> ${appt.doctor}</div>
+        <div><strong>Language:</strong> ${appt.language || "English"}</div>
+        <div><strong>Notes:</strong> ${appt.notes || "None"}</div>
+        <button aria-label="Delete appointment" data-index="${index}" class="absolute top-2 right-2 text-red-600 hover:text-red-800 focus:outline-none">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      `;
+      appointmentList.appendChild(li);
+    });
+  }
+
+  // Delete appointment handler
+  appointmentList.addEventListener("click", (e) => {
+    if (e.target.closest("button")) {
+      const btn = e.target.closest("button");
+      const index = parseInt(btn.getAttribute("data-index"));
+      if (isNaN(index)) return;
+      const appointments = loadAppointments(currentUser);
+      if (index >= 0 && index < appointments.length) {
+        if (confirm("Are you sure you want to delete this appointment?")) {
+          appointments.splice(index, 1);
+          saveAppointments(currentUser, appointments);
+          renderAppointments(currentUser);
+        }
+      }
+    }
+  });
+
+  // Show alert for appointment form
+  function showAppointmentAlert(message, type = "error") {
+    if (type === "error") {
+      showAlert(message, "error", appointmentError);
+    } else {
+      showAlert(message, "success", appointmentSuccess);
+    }
+  }
+
+  // Profile storage functions
+  function saveUserProfile(username, profile) {
+    localStorage.setItem(PROFILE_PREFIX + username, JSON.stringify(profile));
+  }
+  function loadUserProfile(username) {
+    if (!username) return null;
+    return JSON.parse(localStorage.getItem(PROFILE_PREFIX + username)) || null;
+  }
+  function loadProfileToForm() {
+    if (!currentUser) return;
+    const profile = loadUserProfile(currentUser);
+    profileUsername.value = currentUser;
+    if (profile) {
+      profileEmail.value = profile.email || "";
+      profileLanguage.value = profile.language || "English";
+      if (profile.photo) {
+        profilePhoto.src = profile.photo;
+      } else {
+        profilePhoto.src = "https://placehold.co/150x150/png?text=User+Photo";
+      }
+    } else {
+      profileEmail.value = "";
+      profileLanguage.value = "English";
+      profilePhoto.src = "https://placehold.co/150x150/png?text=User+Photo";
+    }
+  }
+
+  // Show alert for profile form
+  function showProfileAlert(message, type = "error") {
+    if (type === "error") {
+      showAlert(message, "error", profileError);
+    } else {
+      showAlert(message, "success", profileSuccess);
+    }
+  }
+
+  // Event Listeners
+  // Login form submit
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = loginForm.username.value.trim();
+    const password = loginForm.password.value.trim();
+    if (!username || !password) {
+      showAlert("Please fill in both fields.", "error", loginError);
+      return;
+    }
+    if (userDB[username] && userDB[username] === password) {
+      currentUser = username;
+      showSection(homeSection);
+      loginForm.reset();
+      loginError.classList.add("hidden");
+      renderBackupTable(currentUser);
+      renderAppointments(currentUser);
+      loadProfileToForm();
+    } else {
+      showAlert("Invalid username or password.", "error", loginError);
+    }
+  });
+
+  // Open signup modal
+  openSignupBtn.addEventListener("click", () => {
+    signupModal.classList.remove("hidden");
+    signupError.classList.add("hidden");
+    signupSuccess.classList.add("hidden");
+    signupForm.reset();
+  });
+
+  // Close signup modal
+  closeSignupBtn.addEventListener("click", () => {
+    signupModal.classList.add("hidden");
+  });
+
+  // Signup form submit
+  signupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = signupForm.username.value.trim();
+    const password = signupForm.password.value.trim();
+    if (!username || !password) {
+      showAlert("Please fill in both fields.", "error", signupError);
+      return;
+    }
+    if (userDB[username]) {
+      showAlert("Username already taken.", "error", signupError);
+      return;
+    }
+    userDB[username] = password;
+    saveUserDB();
+    showAlert("Account created successfully. Please login.", "success", signupSuccess);
+    signupError.classList.add("hidden");
+    signupForm.reset();
+    setTimeout(() => {
+      signupModal.classList.add("hidden");
+    }, 2000);
+  });
+
+  // Home page buttons
+  btnChat.addEventListener("click", () => {
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(chatSection);
+    const messages = loadChatBackup(currentUser);
+    renderChatMessages(messages);
+    chatInput.focus();
+  });
+  btnBackup.addEventListener("click", () => {
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(backupSection);
+    renderBackupTable(currentUser);
+  });
+  btnAppointment.addEventListener("click", () => {
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(appointmentSection);
+    renderAppointments(currentUser);
+  });
+  btnVideoCall.addEventListener("click", () => {
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(videoCallSection);
+  });
+  btnEmergency.addEventListener("click", () => {
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(emergencySection);
+    loadNearestHospital();
+  });
+  btnHelp.addEventListener("click", () => {
+    showSection(helpSection);
+  });
+
+  // Profile navigation
+  document.getElementById("nav-profile").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(profileSection);
+    loadProfileToForm();
+  });
+  document.getElementById("mobile-nav-profile").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    showSection(profileSection);
+    loadProfileToForm();
+  });
+
+  // Logout buttons
+  function logoutUser() {
+    if (confirm("Are you sure you want to logout?")) {
+      currentUser = null;
+      showSection(loginSection);
+    }
+  }
+  btnLogoutNav.addEventListener("click", logoutUser);
+  btnLogoutMobile.addEventListener("click", logoutUser);
+
+  // Chat form submit
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const message = chatInput.value.trim();
+    if (!message) return;
+    addUserMessage(message);
+    chatInput.value = "";
+    await processUserMessage(message);
+  });
+
+  // Voice input button
+  btnVoiceInput.addEventListener("click", () => {
+    startVoiceRecognition();
+  });
+
+  // Clear chat button
+  btnClearChat.addEventListener("click", () => {
+    clearChat();
+  });
+
+  // Translate last bot message button
+  btnTranslateLast.addEventListener("click", () => {
+    translateLastBotMessage();
+  });
+
+  // Backup search input
+  backupSearch.addEventListener("input", () => {
+    if (!currentUser) return;
+    renderBackupTable(currentUser, backupSearch.value);
+  });
+
+  // Navigation links scroll and show sections
+  function navLinkHandler(e) {
+    e.preventDefault();
+    const targetId = e.target.getAttribute("href")?.substring(1);
+    if (!targetId) return;
+    if (targetId === "login") {
+      showSection(loginSection);
+    } else if (targetId === "home") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(homeSection);
+    } else if (targetId === "chat") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(chatSection);
+      const messages = loadChatBackup(currentUser);
+      renderChatMessages(messages);
+      chatInput.focus();
+    } else if (targetId === "backup") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(backupSection);
+      renderBackupTable(currentUser);
+    } else if (targetId === "appointment") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(appointmentSection);
+      renderAppointments(currentUser);
+    } else if (targetId === "video-call") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(videoCallSection);
+    } else if (targetId === "emergency") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(emergencySection);
+      loadNearestHospital();
+    } else if (targetId === "help") {
+      showSection(helpSection);
+    } else if (targetId === "about") {
+      showSection(aboutSection);
+    } else if (targetId === "profile") {
+      if (!currentUser) {
+        alert("Please login first.");
+        showSection(loginSection);
+        return;
+      }
+      showSection(profileSection);
+      loadProfileToForm();
+    }
+  }
+  document.querySelectorAll("nav a").forEach((link) => {
+    link.addEventListener("click", navLinkHandler);
+  });
+  document.querySelectorAll("#mobile-menu a").forEach((link) => {
+    link.addEventListener("click", navLinkHandler);
+  });
+
+  // Brand click goes to home or login
+  document.getElementById("nav-brand").addEventListener("click", () => {
+    if (currentUser) {
+      showSection(homeSection);
+    } else {
+      showSection(loginSection);
+    }
+  });
+
+  // Appointment form submit
+  appointmentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      alert("Please login first.");
+      showSection(loginSection);
+      return;
+    }
+    const date = appointmentForm["date"].value;
+    const time = appointmentForm["time"].value;
+    const doctor = appointmentForm["doctor"].value.trim();
+    const notes = appointmentForm["notes"].value.trim();
+    const language = appointmentForm["language"].value || "English";
+    if (!date || !time || !doctor) {
+      showAppointmentAlert("Please fill in all required fields.", "error");
+      return;
+    }
+    const appointments = loadAppointments(currentUser);
+    appointments.push({ date, time, doctor, notes, language });
+    saveAppointments(currentUser, appointments);
+    renderAppointments(currentUser);
+    appointmentForm.reset();
+    showAppointmentAlert("Appointment added successfully.", "success");
+  });
+
+  // Zoom call button
+  btnZoomCall.addEventListener("click", () => {
+    const zoomUrl = "https://zoom.us/j/1234567890";
+    window.open(zoomUrl, "_blank", "noopener");
+  });
+
+  // Emergency call buttons
+  btnCallEmergency.addEventListener("click", () => {
+    window.location.href = "tel:911";
+  });
+  btnCallAmbulance.addEventListener("click", () => {
+    window.location.href = "tel:911";
+  });
+
+  // Open nearest hospital in maps
+  btnOpenMaps.addEventListener("click", () => {
+    if (nearestHospitalCoords) {
+      const url = `https://www.google.com/maps/search/hospitals/@${nearestHospitalCoords.lat},${nearestHospitalCoords.lng},15z`;
+      window.open(url, "_blank", "noopener");
+    } else {
+      alert("Nearest hospital location not available.");
+    }
+  });
+
+  // Load nearest hospital info using Geolocation API
+  let nearestHospitalCoords = null;
+  function loadNearestHospital() {
+    nearestHospitalInfo.textContent = "Loading nearest hospital info...";
+    if (!navigator.geolocation) {
+      nearestHospitalInfo.textContent = "Geolocation is not supported by your browser.";
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        nearestHospitalCoords = { lat, lng };
+        nearestHospitalInfo.textContent = "Showing hospitals near your current location.";
+      },
+      (error) => {
+        nearestHospitalInfo.textContent = "Unable to retrieve your location. Please allow location access.";
+      }
+    );
+  }
+
+  // Profile photo upload handler
+  profilePhotoInput.addEventListener("change", () => {
+    const file = profilePhotoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      profilePhoto.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Profile form submit
+  profileForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      showProfileAlert("Please login first.", "error");
+      return;
+    }
+    const email = profileEmail.value.trim();
+    const language = profileLanguage.value;
+    const photo = profilePhoto.src;
+    if (email && !validateEmail(email)) {
+      showProfileAlert("Please enter a valid email address.", "error");
+      return;
+    }
+    const profile = { email, language, photo };
+    saveUserProfile(currentUser, profile);
+    showProfileAlert("Profile saved successfully.", "success");
+  });
+
+  // Email validation helper function
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.toLowerCase());
+  }
+
+  // On page load, show login section
+  showSection(loginSection);
+
+  // Initialize voice recognition on page load
+  initVoiceRecognition();
+
+  // Setup recognition event handlers if supported
+  if (isVoiceSupported && recognition) {
+    recognition.onresult = async (event) => {
+      const transcript = event.results[0][0].transcript;
+      addUserMessage(transcript);
+      await processUserMessage(transcript);
+    };
+    recognition.onerror = (event) => {
+      alert("Voice recognition error: " + event.error);
+    };
+  }
+  </script>
+ </body>
+</html>
